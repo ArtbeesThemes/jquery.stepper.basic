@@ -126,16 +126,16 @@
       var value;
 
       if ($.isNumeric(amount)) {
-          value = Math.max(Math.min(amount, this.max), this.min);
-          value = this._roundValue(value);
+        value = Math.max(Math.min(amount, this.max), this.min);
+        value = this._roundValue(value);
 
-          var n = value;
+        var n = value;
 
-          n += this.unit;
-          this.$input.val(n);
+        n += this.unit;
+        this.$input.val(n);
 
-          this._updateProgress(value);
-          return;
+        this._updateProgress(value);
+        return;
       }
 
       this.$input.val(amount);
