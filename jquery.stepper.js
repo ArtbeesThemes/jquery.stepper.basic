@@ -17,7 +17,7 @@
       min: 0,
       max: 100,
       step: 1,
-      unit: "%"
+      unit: ""
     };
 
   // The actual plugin constructor
@@ -42,7 +42,7 @@
 
       // Cache elements
       this.$el = $(this.element);
-      this.$input = this.$el.find(this.settings.selectorInputNumber);
+      this.$input = this.$el;
       this.$progress = this.$el.find(this.settings.selectorProgressBar);
 
       // init values
@@ -50,13 +50,9 @@
       this.min = this.$input.attr("min") || this.settings.min;
       this.max = this.$input.attr("max") || this.settings.max;
       this.step = this.$input.attr("step") || this.settings.step;
-      this.unit = this.$input[0].hasAttribute("unit")
-        ? this.$input.attr("unit")
-        : this.settings.unit;
+      this.unit = this.$input.attr("unit") || this.settings.unit;
 
-      this.value =
-        this.$input.val() ||
-        (this.settings.value !== "" ? this.settings.value : this.max);
+      this.value = this.$input.val() || this.settings.value;
 
       this.setValue(this.value);
 
@@ -67,7 +63,7 @@
       this.$el.on("mousedown touchstart", this.onMouseDown.bind(this));
       this.$el.on("wheel", this.onMouseWheel.bind(this));
       $(document).on("mouseup touchend", this.onMouseUp.bind(this));
-      $(document).on("mousemove touchmove", this.onMouseMove.bind(this));
+      // $(document).on("mousemove touchmove", this.onMouseMove.bind(this));
     },
 
     onMouseDown: function(e) {
@@ -118,32 +114,31 @@
 
     getValue: function() {
       var value = this.$input.val();
-      
+
       if (!$.isNumeric(value)) {
         return value;
       }
-      
+
       return parseFloat(value) || 0;
     },
 
     setValue: function(amount) {
       var value;
-      
+
       if ($.isNumeric(amount)) {
           value = Math.max(Math.min(amount, this.max), this.min);
           value = this._roundValue(value);
 
           var n = value;
-          n = n.toFixed(this.decimals);
 
           n += this.unit;
           this.$input.val(n);
-        
+
           this._updateProgress(value);
           return;
       }
 
-      this.$input.val('auto');
+      this.$input.val(amount);
       this._updateProgress(value);
     },
 
@@ -184,9 +179,7 @@
   // A lightweight plugin wrapper around the constructor, preventing against multiple instantiations
   $.fn[pluginName] = function(options) {
     return this.each(function() {
-      if (!$.data(this, "plugin-" + pluginName)) {
-        $.data(this, "plugin-" + pluginName, new Plugin(this, options));
-      }
+      $.data(this, "plugin-" + pluginName, new Plugin(this, options));
     });
   };
 })(jQuery, window, document);
