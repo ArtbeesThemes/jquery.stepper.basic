@@ -1,5 +1,6 @@
 // jquery.stepper.js
-// https://github.com/ncou/jquery.stepper.basic
+// Original: https://github.com/ncou/jquery.stepper.basic
+// Artbees: https://github.com/ArtbeesThemes/jquery.stepper.basic
 // ------------------------------------------------------
 // Author: NCOU
 //
@@ -62,6 +63,7 @@
       this.$input.on("paste input", this.onChange.bind(this));
       this.$el.on("mousedown touchstart", this.onMouseDown.bind(this));
       this.$el.on("wheel", this.onMouseWheel.bind(this));
+      this.$el.on("keydown", this.onKeydown.bind(this));
       $(document).on("mouseup touchend", this.onMouseUp.bind(this));
       // $(document).on("mousemove touchmove", this.onMouseMove.bind(this));
     },
@@ -86,13 +88,40 @@
     },
 
     onMouseWheel: function(e) {
-      if ( ! $.isNumeric(this.getValue()) ) { return false; }
+      var value = this.getValue();
+
+      if (!$.isNumeric(value) && value.length) {
+        return false;
+      }
+
       // prevent [wheel increase and mousemove increase] and [wheel increase] if the input field is not focused
-      if (this._curDown === false && this.$input.is(":focus")) {
+      if (this.$input.is(":focus")) {
         e.preventDefault();
         // delta is 1 if scroll up, or -1 if scroll down
         var d = e.originalEvent.deltaY < 0 ? 1 : -1;
         this.setValue(this.getValue() + d * this.step);
+      }
+    },
+
+    onKeydown: function(e) {
+      if (e.which == 38 || e.which == 40) {
+        var value = this.getValue();
+
+        if (!$.isNumeric(value) && value.length) {
+          return false;
+        }
+
+        if (!this.$input.is(":focus")) {
+          return false;
+        }
+
+        if (e.which == 38) {
+          this.setValue(this.getValue() + 1 * this.step);
+        }
+
+        if (e.which == 40) {
+          this.setValue(this.getValue() - 1 * this.step);
+        }
       }
     },
 
