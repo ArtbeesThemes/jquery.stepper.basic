@@ -166,6 +166,10 @@
         this._updateProgress(value);
         return;
       }
+      
+      if ('auto' != amount) {
+         amount = ''
+      }
 
       this.$input.val(amount);
       this._updateProgress(value);
